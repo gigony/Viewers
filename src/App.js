@@ -27,6 +27,7 @@ import OHIFDicomMicroscopyExtension from '@ohif/extension-dicom-microscopy';
 import OHIFDicomPDFExtension from '@ohif/extension-dicom-pdf';
 import OHIFStandaloneViewer from './OHIFStandaloneViewer';
 import OHIFVTKExtension from '@ohif/extension-vtk';
+import OHIFStateAdaptor from 'ohif-extension-state-adapter';
 // ~~ EXTENSIONS
 import { OidcProvider } from 'redux-oidc';
 import PropTypes from 'prop-types';
@@ -69,6 +70,8 @@ extensionManager.registerExtensions([
   OHIFDicomPDFExtension,
   OHIFDicomHtmlExtension,
   OHIFDicomMicroscopyExtension,
+  //
+  // OHIFStateAdaptor,
 ]);
 
 // Must run after extension commands are registered
@@ -95,7 +98,7 @@ function makeAbsoluteIfNecessary(url, base_url) {
   }
 
   // Make sure base_url and url are not duplicating slashes
-  if (base_url[base_url.length - 1] === "/") {
+  if (base_url[base_url.length - 1] === '/') {
     base_url = base_url.slice(0, base_url.length - 1);
   }
 
@@ -126,18 +129,26 @@ class App extends Component {
       const baseUri = `${protocol}//${host}${routerBasename}`;
 
       const redirect_uri = firstOpenIdClient.redirect_uri || '/callback';
-      const silent_redirect_uri = firstOpenIdClient.silent_redirect_uri || '/silent-refresh.html';
-      const post_logout_redirect_uri = firstOpenIdClient.post_logout_redirect_uri || '/';
+      const silent_redirect_uri =
+        firstOpenIdClient.silent_redirect_uri || '/silent-refresh.html';
+      const post_logout_redirect_uri =
+        firstOpenIdClient.post_logout_redirect_uri || '/';
 
       const openIdConnectConfiguration = Object.assign({}, firstOpenIdClient, {
         redirect_uri: makeAbsoluteIfNecessary(redirect_uri, baseUri),
-        silent_redirect_uri: makeAbsoluteIfNecessary(silent_redirect_uri, baseUri),
-        post_logout_redirect_uri: makeAbsoluteIfNecessary(post_logout_redirect_uri, baseUri),
+        silent_redirect_uri: makeAbsoluteIfNecessary(
+          silent_redirect_uri,
+          baseUri
+        ),
+        post_logout_redirect_uri: makeAbsoluteIfNecessary(
+          post_logout_redirect_uri,
+          baseUri
+        ),
       });
 
       this.userManager = getUserManagerForOpenIdConnectClient(
         store,
-        openIdConnectConfiguration,
+        openIdConnectConfiguration
       );
     }
     handleServers(this.props.servers);
