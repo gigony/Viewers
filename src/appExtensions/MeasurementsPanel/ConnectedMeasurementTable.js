@@ -333,6 +333,8 @@ const mergeProps = (propsFromState, propsFromDispatch, ownProps) => {
     onDeleteClick: (event, measurementData) => {
       const { MeasurementHandlers } = OHIF.measurements;
 
+      console.log('CONNECTED DELETE');
+
       MeasurementHandlers.onRemoved({
         detail: {
           toolType: measurementData.toolType,
