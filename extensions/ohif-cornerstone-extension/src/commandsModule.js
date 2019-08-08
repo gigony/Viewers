@@ -31,7 +31,7 @@ const actions = {
   flipViewportVertical: ({ viewports }) => {
     const enabledElement = _getActiveViewportEnabledElement(
       viewports.viewportSpecificData,
-      viewports.activeViewportIndex
+      viewports.activeViewportIndexp
     );
 
     if (enabledElement) {
@@ -137,6 +137,8 @@ const actions = {
       });
     });
 
+    console.log('************************');
+    console.log(measurementsToRemove);
     measurementsToRemove.forEach(measurementData => {
       OHIF.measurements.MeasurementHandlers.onRemoved({
         detail: {

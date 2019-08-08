@@ -68,11 +68,12 @@ const renderStateAdapterModal = (
               var configFile = e.target.files[0];
               var reader = new FileReader();
 
-              console.log(commandsManager);
+              // console.log(commandsManager);
 
               reader.onload = function() {
                 var text = reader.result;
                 var parsedText = JSON.parse(reader.result.substring(0, 10000));
+
                 setStateAdapterConfiguration(parsedText);
               };
               reader.readAsText(configFile);
@@ -186,7 +187,17 @@ class ToolbarRow extends Component {
   }
 
   handleLoadStateAdapterConfiguration() {
-    window.store.dispatch(this.state.stateAdapterConfiguration);
+    console.log('**************************');
+    console.log(this.state.stateAdapterConfiguration);
+    this.state.stateAdapterConfiguration.map(e => {
+      if (e.command) {
+        window.commandsManager.runCommand(e.command);
+      } else if (e.type) {
+        window.store.dispatch(e);
+      }
+    });
+
+    // ;
   }
 
   render() {
