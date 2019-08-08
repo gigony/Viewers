@@ -14,6 +14,39 @@ import ConnectedPluginSwitch from './ConnectedPluginSwitch.js';
 import { MODULE_TYPES } from 'ohif-core';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import Modal from 'react-bootstrap-modal';
+
+const renderStateAdapterModal = (isOpen, onHide) => {
+  return (
+    <Modal
+      show={isOpen}
+      onHide={onHide}
+      aria-labelledby="ModalHeader"
+      className="AboutModal modal fade themed in"
+      backdrop={false}
+      large={true}
+      keyboard={false}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>State Adapter</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div>
+          <h3>
+            This modular allows confiuration to be loaded from a JSON file.
+          </h3>
+        </div>
+
+        <div className="btn-group">
+          <button className="btn btn-default">Browse File</button>
+          <a className="btn btn-default" target="_blank" href="http://ohif.org">
+            Save
+          </a>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+};
 
 class ToolbarRow extends Component {
   // TODO: Simplify these? isOpen can be computed if we say "any" value for selected,
@@ -43,6 +76,7 @@ class ToolbarRow extends Component {
       toolbarButtons: toolbarButtonDefinitions,
       activeButtons: [],
       isCineDialogOpen: false,
+      isStateAdapterModalOpen: false,
     };
 
     this._handleBuiltIn = _handleBuiltIn.bind(this);
@@ -96,6 +130,12 @@ class ToolbarRow extends Component {
     }
   }
 
+  handleSetStateAdapterModalOpen(isStateAdapterModalOpen) {
+    this.setState({
+      isStateAdapterModalOpen,
+    });
+  }
+
   render() {
     const buttonComponents = _getButtonComponents.call(
       this,
@@ -116,6 +156,8 @@ class ToolbarRow extends Component {
     const onPressLeft = onPress.bind(this, 'left');
     const onPressRight = onPress.bind(this, 'right');
 
+    const isStateAdapterModalOpen = this.state.isStateAdapterModalOpen;
+
     return (
       <>
         <div className="ToolbarRow">
@@ -127,6 +169,20 @@ class ToolbarRow extends Component {
             />
           </div>
           {buttonComponents}
+
+          <div
+            className="toolbar-button"
+            style={{
+              backgroundColor: 'teal',
+            }}
+            onClick={() =>
+              this.handleSetStateAdapterModalOpen(!isStateAdapterModalOpen)
+            }
+          ></div>
+          {renderStateAdapterModal(isStateAdapterModalOpen, () =>
+            this.handleSetStateAdapterModalOpen(false)
+          )}
+
           <ConnectedLayoutButton />
           <ConnectedPluginSwitch />
           <div
