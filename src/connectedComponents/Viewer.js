@@ -15,6 +15,8 @@ import SidePanel from './../components/SidePanel.js';
 import { extensionManager } from './../App.js';
 import UserManagerContext from '../UserManagerContext';
 import './Viewer.css';
+
+
 /**
  * Inits OHIF Hanging Protocol's onReady.
  * It waits for OHIF Hanging Protocol to be ready to instantiate the ProtocolEngine
@@ -50,6 +52,14 @@ OHIF.viewer.functionList = {
     resetViewport: viewportUtils.resetViewport,
     invert: viewportUtils.invert
 };*/
+
+const downloadState = (content, fileName, contentType) => {
+  var a = document.createElement("a");
+  var file = new Blob([content], {type: contentType});
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
 
 class Viewer extends Component {
   static propTypes = {
@@ -100,10 +110,19 @@ class Viewer extends Component {
 
   storeMeasurements = (measurementData, timepointIds) => {
     OHIF.log.info('storeMeasurements');
-    // TODO: Store the measurements into a new SR sent to the active server.
-    console.log("#patientID", measurementData.allTools[0] && measurementData.allTools[0].patientId);
-    console.log("#timepointId", measurementData.allTools[0] && measurementData.allTools[0].timepointId);
-    console.log("#storeMeasurements", JSON.stringify(measurementData));
+
+    const patientID = measurementData.allTools[0] && measurementData.allTools[0].patientId;
+    const timepointId = measurementData.allTools[0] && measurementData.allTools[0].timepointId;
+    const data = {
+      [`${patientID}\t${timepointId}`]: measurementData
+    };
+
+    downloadState(
+      JSON.stringify(data), 
+      `state_adapter_measurement_${moment().toDate().getTime()}.json`,
+      'text/plain'
+    );
+
     return Promise.resolve();
   };
 

@@ -184,6 +184,7 @@ class ToolbarRow extends Component {
     this.setState({
       stateAdapterConfiguration: configurations,
     });
+    window.stateAdapter = { configurations };
   }
 
   handleLoadStateAdapterConfiguration() {
@@ -196,8 +197,6 @@ class ToolbarRow extends Component {
         window.store.dispatch(e);
       }
     });
-
-    // ;
   }
 
   render() {
