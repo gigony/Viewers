@@ -148,6 +148,9 @@ const actions = {
       });
     });
   },
+  saveMeasurements: ({ viewports }) => {
+    console.log('##hello');
+  },
   nextImage: ({ viewports }) => {
     const enabledElement = _getActiveViewportEnabledElement(
       viewports.viewportSpecificData,
@@ -163,7 +166,7 @@ const actions = {
     );
 
     scroll(enabledElement, -1);
-  }
+  },
 };
 
 const definitions = {
@@ -214,6 +217,11 @@ const definitions = {
   },
   clearAnnotations: {
     commandFn: actions.clearAnnotations,
+    storeContexts: ['viewports'],
+    options: {},
+  },
+  saveMeasurements: {
+    commandFn: actions.saveMeasurements,
     storeContexts: ['viewports'],
     options: {},
   },
