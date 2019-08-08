@@ -17,6 +17,27 @@ import { withTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap-modal';
 
 const renderStateAdapterModal = (isOpen, onHide) => {
+  const layout = {
+    viewports: [
+      {
+        height: '50%',
+        width: '50%',
+      },
+      {
+        height: '50%',
+        width: '50%',
+      },
+      {
+        height: '50%',
+        width: '50%',
+      },
+      {
+        height: '50%',
+        width: '50%',
+      },
+    ],
+  };
+
   return (
     <Modal
       show={isOpen}
@@ -37,12 +58,20 @@ const renderStateAdapterModal = (isOpen, onHide) => {
           </h3>
         </div>
 
-        <div className="btn-group">
-          <button className="btn btn-default">Browse File</button>
-          <a className="btn btn-default" target="_blank" href="http://ohif.org">
-            Save
-          </a>
-        </div>
+        <form
+          onSubmit={event => {
+            event.preventDefault();
+            onHide();
+            window.store.dispatch({ type: 'VIEWPORT::SET_LAYOUT', layout });
+            console.log('Form is submittting');
+          }}
+        >
+          Select a file:
+          <input type="file" name="myFile" />
+          <br />
+          <br />
+          <input type="submit" value="Load Configurations" />
+        </form>
       </Modal.Body>
     </Modal>
   );
