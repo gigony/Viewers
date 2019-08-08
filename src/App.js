@@ -71,7 +71,7 @@ extensionManager.registerExtensions([
   OHIFDicomHtmlExtension,
   OHIFDicomMicroscopyExtension,
   //
-  // OHIFStateAdaptor,
+  OHIFStateAdaptor,
 ]);
 
 // Must run after extension commands are registered
