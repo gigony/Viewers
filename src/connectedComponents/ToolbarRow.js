@@ -72,7 +72,7 @@ const renderStateAdapterModal = (
 
               reader.onload = function() {
                 var text = reader.result;
-                var parsedText = JSON.parse(reader.result.substring(0, 10000));
+                var parsedText = JSON.parse(reader.result);
 
                 setStateAdapterConfiguration(parsedText);
               };
