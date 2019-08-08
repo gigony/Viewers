@@ -224,6 +224,7 @@ class Viewer extends Component {
 
     if (studies) {
       const patientId = studies[0] && studies[0].patientId;
+      console.log("##studies", studies);
 
       timepointApi.retrieveTimepoints({ patientId });
       measurementApi.retrieveMeasurements(patientId, [currentTimepointId]);
@@ -237,6 +238,7 @@ class Viewer extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.studies !== prevProps.studies) {
       const { studies } = this.props;
+      console.log("##studies2", studies);
       const patientId = studies[0] && studies[0].patientId;
       const currentTimepointId = this.currentTimepointId;
 
