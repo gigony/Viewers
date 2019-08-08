@@ -16,28 +16,12 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap-modal';
 
-const renderStateAdapterModal = (isOpen, onHide) => {
-  const layout = {
-    viewports: [
-      {
-        height: '50%',
-        width: '50%',
-      },
-      {
-        height: '50%',
-        width: '50%',
-      },
-      {
-        height: '50%',
-        width: '50%',
-      },
-      {
-        height: '50%',
-        width: '50%',
-      },
-    ],
-  };
-
+const renderStateAdapterModal = (
+  isOpen,
+  onHide,
+  setStateAdapterConfiguration,
+  loadStateAdapterConfiguration
+) => {
   return (
     <Modal
       show={isOpen}
@@ -60,14 +44,26 @@ const renderStateAdapterModal = (isOpen, onHide) => {
 
         <form
           onSubmit={event => {
-            event.preventDefault();
+            loadStateAdapterConfiguration();
             onHide();
-            window.store.dispatch({ type: 'VIEWPORT::SET_LAYOUT', layout });
-            console.log('Form is submittting');
+            event.preventDefault();
           }}
         >
           Select a file:
-          <input type="file" name="myFile" />
+          <input
+            type="file"
+            onChange={e => {
+              var configFile = e.target.files[0];
+              var reader = new FileReader();
+
+              reader.onload = function() {
+                var text = reader.result;
+                var parsedText = JSON.parse(reader.result.substring(0, 10000));
+                setStateAdapterConfiguration(parsedText);
+              };
+              reader.readAsText(configFile);
+            }}
+          />
           <br />
           <br />
           <input type="submit" value="Load Configurations" />
@@ -106,6 +102,7 @@ class ToolbarRow extends Component {
       activeButtons: [],
       isCineDialogOpen: false,
       isStateAdapterModalOpen: false,
+      stateAdapterConfiguration: {},
     };
 
     this._handleBuiltIn = _handleBuiltIn.bind(this);
@@ -165,6 +162,16 @@ class ToolbarRow extends Component {
     });
   }
 
+  handleSetStateAdapterConfiguration(configurations) {
+    this.setState({
+      stateAdapterConfiguration: configurations,
+    });
+  }
+
+  handleLoadStateAdapterConfiguration() {
+    window.store.dispatch(this.state.stateAdapterConfiguration);
+  }
+
   render() {
     const buttonComponents = _getButtonComponents.call(
       this,
@@ -208,8 +215,14 @@ class ToolbarRow extends Component {
               this.handleSetStateAdapterModalOpen(!isStateAdapterModalOpen)
             }
           ></div>
-          {renderStateAdapterModal(isStateAdapterModalOpen, () =>
-            this.handleSetStateAdapterModalOpen(false)
+          {renderStateAdapterModal(
+            isStateAdapterModalOpen,
+            () => this.handleSetStateAdapterModalOpen(false),
+            stateAdapterConfiguration =>
+              this.handleSetStateAdapterConfiguration(
+                stateAdapterConfiguration
+              ),
+            () => this.handleLoadStateAdapterConfiguration()
           )}
 
           <ConnectedLayoutButton />
